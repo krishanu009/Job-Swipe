@@ -42,7 +42,7 @@ function Register() {
       }).catch((e)=> {
         setIsSubmitting(false);
         // alert(e.data.errors);
-        console.log("N",e);
+        console.log("N",e.response.data.message);
         setErrorText(e.response.data.message);
       })
     };
@@ -76,6 +76,7 @@ function Register() {
        <button disabled={isSubmitting} class="submit">Submit</button>
        <p class="sign-in">Already have an account ? 
          <a href="/" style={{color:"#43c7e8"}}>Log in</a>
+         <p className="text-red-500">{errorText}</p>
          </p>
     </form>
  </div></div>

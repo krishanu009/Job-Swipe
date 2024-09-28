@@ -58,7 +58,7 @@ const userSchema = mongoose.Schema({
     endDate:{
         type:String
     },
-    description:{
+    roleDescription:{
         type:String
     },
     current:{

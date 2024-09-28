@@ -16,7 +16,7 @@ function Login() {
     const [emailButtonText, setEmailButtonText] = useState('Copy');
     const [passwordButtonText, setPasswordButtonText] = useState('Copy');
  useEffect(() => {
-  fetchAndSetLocalData();
+  // fetchAndSetLocalData();
  },[])
 
     
@@ -34,16 +34,20 @@ function Login() {
       axios.post(process.env.REACT_APP_LOGIN_USER, payload ).then((res)=>{
         setIsSubmitting(false);
         console.log("y",res.data);
-        localStorage.setItem('token', res.data.accesToken)
-        
+        localStorage.setItem('token', res.data)
+        // console.log("token",localStorage.getItem("token"));
         navigate("/dashboard");
       }).catch((e)=> {
         setIsSubmitting(false);
         // alert(e.data.errors);
-        console.log("N",e);
-        setErrorText(e.response.data.message);
+        console.log("N",e.response.data);
+        setErrorText(e.response.data);
       })
     };
+
+    const setCurrentUser = async () => {
+        await axios.get(process.env.RE)
+    }
 
     const fetchAndSetLocalData = () => {
       let localInfo = JSON.parse(localStorage.getItem('userInfo'));
@@ -85,11 +89,15 @@ function Login() {
        {/* <label>
          <input type="password" placeholder = "Confirm password" required />
        </label> */}
+       
        <button disabled={isSubmitting} class="submit">Submit</button>
        <p class="sign-in">New User? 
          <a href="/register" style={{color:"#43c7e8"}}>Register here</a>
+         <p className="text-red-500">{errorText}</p>
          </p>
+        
     </form>
+   
  </div></div>
   )
 }

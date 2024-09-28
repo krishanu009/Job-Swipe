@@ -1,29 +1,46 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "../styling/jobapplication.css";
-function NewJobApplication() {
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+function NewJobApplication({ logout, userInfo, getUser }) {
+  const navigate = useNavigate();
   const [educationData, setEducationData] = useState([]);
   const [currentEducationData, setCurrentEducationData] = useState();
   const [companyData, setCompanyData] = useState([]);
   const [currentCompanyData, setCurrentCompanyData] = useState();
   const [companyName, setCompanyName] = useState();
-  const [companyPosition, setCompanyPosition] = useState();
-  const [companyStartDate, setCompanyStartDate] = useState();
-  const [companyEndDate, setCompanyEndDate] = useState();
-  const [companyDescription, setCompanyDescription] = useState();
+  const [position, setCompanyPosition] = useState();
+  const [startDate, setCompanyStartDate] = useState();
+  const [endDate, setCompanyEndDate] = useState();
+  const [roleDescription, setCompanyDescription] = useState();
 
   const [currentlyWorking, setCurrentlyWorking] = useState(false);
   const [errorText, setErrorText] = useState("");
 
   const [projectData, setProjectData] = useState([]);
   const [projectName, setProjectName] = useState("");
-  const [projectDomain, setProjectDomain] = useState("");
-  const [projectGithubLink, setGithubLink] = useState("");
-  const [projectLiveLink, setPojectLiveLink] = useState("");
-  const [projectDescription, setPojectDescription] = useState("");
+  const [domain, setDomain] = useState("");
+  const [githubLink, setGithubLink] = useState("");
+  const [liveLink, setPojectLiveLink] = useState("");
+  const [description, setPojectDescription] = useState("");
   const [errorProjectText, setProjectErrorText] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
+  const [updatingUser,setUpdatingUser] = useState(false);
+  useEffect(() => {
+    if (!userInfo) return;
+    setFirstName(userInfo.firstName);
+    setLastName(userInfo.lastName);
+    setPhone(userInfo.phone);
+    setEmail(userInfo.email);
+    setProjectData(userInfo.project);
+    setCompanyData(userInfo.experiance);
+  }, [userInfo]);
 
   const handleAddCompany = () => {
-    if (!currentlyWorking && !companyEndDate) {
+    if (!currentlyWorking && !endDate) {
       setErrorText("Please enter the end date");
       return;
     }
@@ -31,11 +48,11 @@ function NewJobApplication() {
       setErrorText("Please enter company name");
       return;
     }
-    if (!companyStartDate) {
+    if (!startDate) {
       setErrorText("Please enter start date");
       return;
     }
-    if (!companyPosition) {
+    if (!position) {
       setErrorText("Please enter company position");
       return;
     }
@@ -44,9 +61,10 @@ function NewJobApplication() {
 
     currCompanyData.push({
       companyName,
-      companyStartDate,
-      companyEndDate,
-      companyDescription,
+      startDate,
+      endDate,
+      roleDescription,
+      current: currentlyWorking,
     });
 
     setCompanyData(currCompanyData);
@@ -65,30 +83,33 @@ function NewJobApplication() {
     setCompanyData(currCompanyData);
   };
 
-
   const handleAddProject = () => {
     if (!projectName) {
       setProjectErrorText("Please enter a project name");
       return;
     }
-    if (!projectDomain) {
+    if (!domain) {
       setProjectErrorText("Please enter a project domain");
       return;
     }
 
-    if (!projectDescription) {
+    if (!description) {
       setProjectErrorText("Please enter a project description");
       return;
     }
 
     let currentProjectData = [...projectData];
-        
+
     currentProjectData.push({
-      projectName,projectDomain,projectGithubLink,projectLiveLink,projectDescription
+      projectName,
+      domain,
+      githubLink,
+      liveLink,
+      description,
     });
     setProjectData(currentProjectData);
     setProjectName("");
-    setProjectDomain("");
+    setDomain("");
     setGithubLink("");
     setPojectLiveLink("");
     setPojectDescription("");
@@ -100,31 +121,73 @@ function NewJobApplication() {
 
     setProjectData(currProjectData);
   };
+  const updateUser = async () => {
+    let payload = {
+      firstName,
+      lastName,
+      email,
+      phone,
+      experiance:companyData,
+      project:projectData
+    }
+    setUpdatingUser(true);
+    await axios.post(process.env.REACT_APP_UPDATE_USER_BY_ID + "/" + userInfo._id, payload, {
+      headers: { Authorization: "Bearer " + localStorage.getItem("token") },
+    })
+    .then((res) => {
+    
+      console.log("updateUser", res.data);
+      getUser();
+      setUpdatingUser(false);
+    })
+    .catch((e) => {
+      console.log(e);
+      setUpdatingUser(false);
+    
+    });
+  };
+
+  function formatDate(isoString) {
+    const date = new Date(isoString);
+    
+    const options = { 
+        month: 'short', // Short month name like 'Sep'
+        day: 'numeric', // Day of the month
+        year: 'numeric' // Full year
+    };
+
+    return new Intl.DateTimeFormat('en-US', options).format(date);
+}
+
   return (
     <div className="h-full bg-black pt-16 main pb-[30%]">
       <form class="max-w-md mx-auto">
         {/* <div class="relative z-0 w-full mb-5 group">
-      <input type="email" name="floating_email" id="floating_email" class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder=" " required />
+      <input type="email" name="floating_email" id="floating_email" class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder=" "  />
       <label for="floating_email" class="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Email address</label>
   </div>
   <div class="relative z-0 w-full mb-5 group">
-      <input type="password" name="floating_password" id="floating_password" class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder=" " required />
+      <input type="password" name="floating_password" id="floating_password" class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder=" "  />
       <label for="floating_password" class="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Password</label>
   </div>
   <div class="relative z-0 w-full mb-5 group">
-      <input type="password" name="repeat_password" id="floating_repeat_password" class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder=" " required />
+      <input type="password" name="repeat_password" id="floating_repeat_password" class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder=" "  />
       <label for="floating_repeat_password" class="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Confirm password</label>
   </div> */}
         <h2>Basic info</h2>
         <div class="grid md:grid-cols-2 md:gap-6">
           <div class="relative z-0 w-full mb-5 group">
             <input
+              value={firstName}
+              onChange={(e) => {
+                setFirstName(e.target.value);
+              }}
               type="text"
               name="floating_first_name"
               id="floating_first_name"
               class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
               placeholder=" "
-              required
+              
             />
             <label
               for="floating_first_name"
@@ -135,12 +198,16 @@ function NewJobApplication() {
           </div>
           <div class="relative z-0 w-full mb-5 group">
             <input
+              value={lastName}
+              onChange={(e) => {
+                setLastName(e.target.value);
+              }}
               type="text"
               name="floating_last_name"
               id="floating_last_name"
               class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
               placeholder=" "
-              required
+              
             />
             <label
               for="floating_last_name"
@@ -153,13 +220,17 @@ function NewJobApplication() {
         <div class="grid md:grid-cols-2 md:gap-6">
           <div class="relative z-0 w-full mb-5 group">
             <input
+              value={phone}
+              onChange={(e) => {
+                setPhone(e.target.value);
+              }}
               type="tel"
-              pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}"
+              
               name="floating_phone"
               id="floating_phone"
               class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
               placeholder=" "
-              required
+              
             />
             <label
               for="floating_phone"
@@ -170,12 +241,17 @@ function NewJobApplication() {
           </div>
           <div class="relative z-0 w-full mb-5 group">
             <input
+            disabled
+              value={email}
+              onChange={(e) => {
+                setEmail(e.target.value);
+              }}
               type="email"
               name="floating_email"
               id="floating_email"
               class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
               placeholder=" "
-              required
+              
             />
             <label
               for="floating_email"
@@ -212,9 +288,11 @@ function NewJobApplication() {
               </h5>
 
               <p class="mb-1 font-normal text-gray-700 dark:text-gray-400">
-                {item.companyDescription} ({item.companyStartDate} - ({item.companyEndDate})
-                {item.companyEndDate})<br />
-                {item.companyDescription}
+                {item.position} ({formatDate(item.startDate)} -{" "}
+                {item.endDate ? formatDate(item.endDate) : "Present"})
+                <br />
+                {item.roleDescription}
+                <br />
               </p>
             </div>
           ))}
@@ -234,7 +312,7 @@ function NewJobApplication() {
               id="company_name"
               class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
               placeholder=" "
-              required
+              
             />
             <label
               for="company_name"
@@ -248,13 +326,13 @@ function NewJobApplication() {
               onChange={(e) => {
                 setCompanyPosition(e.target.value);
               }}
-              value={companyPosition}
+              value={position}
               type="text"
               name="position"
               id="position"
               class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
               placeholder=" "
-              required
+              
             />
             <label
               for="position"
@@ -271,13 +349,13 @@ function NewJobApplication() {
               onChange={(e) => {
                 setCompanyStartDate(e.target.value);
               }}
-              value={companyStartDate}
+              value={startDate}
               type="date"
               name="start_date"
               id="start_date"
               class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
               placeholder=" "
-              required
+              
             />
             <label
               for="start_date"
@@ -291,14 +369,14 @@ function NewJobApplication() {
               onChange={(e) => {
                 setCompanyEndDate(e.target.value);
               }}
-              value={companyEndDate}
+              value={endDate}
               disabled={currentlyWorking}
               type="date"
               name="end_date"
               id="end_date"
               class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
               placeholder=" "
-              required
+              
             />
             <label
               for="end_date"
@@ -334,13 +412,13 @@ function NewJobApplication() {
               onChange={(e) => {
                 setCompanyDescription(e.target.value);
               }}
-              value={companyDescription}
+              value={roleDescription}
               type="text"
               name="role_description"
               id="role_description"
               class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
               placeholder=" "
-              required
+              
             />
             <label
               for="role_description"
@@ -365,7 +443,8 @@ function NewJobApplication() {
 
         {/* entered projects info */}
         <div className="overflow-auto max-h-96 space-y-2">
-          {projectData.map(item => (<div class="max-w-sm p-4 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
+          {projectData.map((item) => (
+            <div class="max-w-sm p-4 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
               <div
                 onClick={(e) => {
                   removeProject(item);
@@ -388,11 +467,16 @@ function NewJobApplication() {
               </h5>
 
               <p class="mb-1 font-normal text-gray-700 dark:text-gray-400">
-               {item.projectGithubLink}<br/>
-               {item.projectLiveLink}<br/>
-               {item.projectDescription}
+                {item.domain}
+                <br />
+                {item.githubLink}
+                <br />
+                {item.liveLink}
+                <br />
+                {item.description}
               </p>
-            </div>))}
+            </div>
+          ))}
         </div>
 
         {/* entered projects info */}
@@ -410,7 +494,7 @@ function NewJobApplication() {
               id="project_name"
               class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
               placeholder=" "
-              required
+              
             />
             <label
               for="project_name"
@@ -422,15 +506,15 @@ function NewJobApplication() {
           <div class="relative z-0 w-full mb-5 group">
             <input
               onChange={(e) => {
-                setProjectDomain(e.target.value);
+                setDomain(e.target.value);
               }}
-              value={projectDomain}
+              value={domain}
               type="text"
               name="domain"
               id="domain"
               class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
               placeholder=" "
-              required
+              
             />
             <label
               for="position"
@@ -447,13 +531,13 @@ function NewJobApplication() {
               onChange={(e) => {
                 setGithubLink(e.target.value);
               }}
-              value={projectGithubLink}
+              value={githubLink}
               type="text"
               name="project_github_link"
               id="project_github_link"
               class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
               placeholder=" "
-              required
+              
             />
             <label
               for="start_date"
@@ -467,13 +551,13 @@ function NewJobApplication() {
               onChange={(e) => {
                 setPojectLiveLink(e.target.value);
               }}
-              value={projectLiveLink}
+              value={liveLink}
               type="text"
               name="project_link"
               id="project_link"
               class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
               placeholder=" "
-              required
+              
             />
             <label
               for="project_link"
@@ -490,13 +574,13 @@ function NewJobApplication() {
               onChange={(e) => {
                 setPojectDescription(e.target.value);
               }}
-              value={projectDescription}
+              value={description}
               type="text"
               name="project_description"
               id="project_description"
               class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
               placeholder=" "
-              required
+              
             />
             <label
               for="project_description"
@@ -518,12 +602,30 @@ function NewJobApplication() {
         <p className="text-red-500">{errorProjectText}</p>
 
         {/* new projects info */}
-        <button
-          type="submit"
-          class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-        >
-          Submit
-        </button>
+
+        <div class="grid md:grid-cols-3 md:gap-6">
+          <div class="col-span-2 relative z-0 w-full mb-5 group space-x-4">
+            <button
+            disabled = {updatingUser}
+            type="button"
+            onClick={(e) => {updateUser()}}
+             
+              class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+            >
+              Save changes
+            </button>
+
+            <button
+            type="button"
+              onClick={(e) => {
+                logout();
+              }}
+              class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+            >
+              Log out
+            </button>
+          </div>
+        </div>
       </form>
     </div>
   );
