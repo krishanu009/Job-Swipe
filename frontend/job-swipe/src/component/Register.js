@@ -37,7 +37,7 @@ function Register() {
       axios.post(process.env.REACT_APP_REGISTER_USER, payload ).then((res)=>{
         setIsSubmitting(false);
         console.log("y",res.data);
-        localStorage.setItem('token', res.data.accesToken)
+        localStorage.setItem('RecruiterToken', res.data.accesToken)
         navigate("/dashboard");
       }).catch((e)=> {
         setIsSubmitting(false);

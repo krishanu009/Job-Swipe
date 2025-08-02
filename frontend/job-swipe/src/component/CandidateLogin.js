@@ -5,7 +5,7 @@ import React, { useState, useContext, useEffect,useRef } from 'react'
 import axios from 'axios';
 import {Link, Navigate } from 'react-router-dom';
 import { useNavigate } from "react-router-dom"
-function Login() {
+function CandidateLogin() {
 
     const navigate = useNavigate();
     const [email, setEmail] = useState('');
@@ -34,7 +34,8 @@ function Login() {
       axios.post(process.env.REACT_APP_LOGIN_USER, payload ).then((res)=>{
         setIsSubmitting(false);
         console.log("y",res.data);
-        localStorage.setItem('token', res.data)
+       
+        localStorage.setItem('CandidateToken', res.data)
         // console.log("token",localStorage.getItem("token"));
         navigate("/dashboard");
       }).catch((e)=> {
@@ -76,7 +77,7 @@ function Login() {
   return (
     <div><div class="container">
     <form onSubmit={(e) => loginAction(e)} class="form">
-       <h2 class="title">Login</h2>
+       <h2 class="title">Candidate Login</h2>
        <p class="title-message">Login now and get full access to our app.</p>
       
        <label>
@@ -92,7 +93,7 @@ function Login() {
        
        <button disabled={isSubmitting} class="submit">Submit</button>
        <p class="sign-in">New User? 
-         <a href="/register" style={{color:"#43c7e8"}}>Register here</a>
+         <a href="/candidateRegister" style={{color:"#43c7e8"}}>Register here</a>
          <p className="text-red-500">{errorText}</p>
          </p>
         
@@ -102,4 +103,4 @@ function Login() {
   )
 }
 
-export default Login
+export default CandidateLogin

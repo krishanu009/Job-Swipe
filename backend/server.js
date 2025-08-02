@@ -12,6 +12,8 @@ connectDb();
 
 app.use(express.json());
 app.use('/api/user',require('./routes/userRoutes'));
+app.use('/api/hr',require('./routes/hrRoutes'));
+app.use('/api/job',require('./routes/jobRoutes'));
 app.use(errorHandler);
 
 

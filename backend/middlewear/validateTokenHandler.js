@@ -9,7 +9,7 @@ const validateToken = asyncHandler(async (req,res, next)=>{
     if(authHeader && authHeader.startsWith("Bearer"))
     {
        token = authHeader.split(" ")[1]; // split based on " " and get the 2nd value from the array i.e the token 
-       
+       console.log()
        jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, decoded) => {
         if(err){
             res.status(401);

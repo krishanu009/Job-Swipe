@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from "react";
 import "../styling/swipe.css";
-import axios from 'axios';
-function JobSwipe({userInfo}) {
+import axios from "axios";
+import { useLocation } from "react-router-dom";
+function ApplicationSwipe() {
+  const location = useLocation();
   const [isDragging, setIsDragging] = useState(false);
   const [isVisible, setIsVisible] = useState(true);
   const [screenX, setScreenX] = useState(0);
@@ -11,6 +13,9 @@ function JobSwipe({userInfo}) {
   const [showAcceptImage, setShowAcceptImage] = useState(false);
   const [showRejecttImage, setShowRejecttImage] = useState(false);
   const [currentJobApplication, setCurrentJobApplication] = useState("");
+  const { userInfo, jobId } = location.state || {};
+  // console.log("erehere",{userInfo,jobId});
+
   // const [jobData, setJobData] = useState([
   //   {
   //     id: "1",
@@ -49,7 +54,7 @@ function JobSwipe({userInfo}) {
   //       "is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
   //   },
   // ]);
-  const [jobData, setJobData] = useState([]);
+  const [applicationData, setApplicationData] = useState([]);
   const [resumeShortlisted, setResumeShortlisted] = useState([]);
   const [resumeRejected, setResumeRejected] = useState([]);
 
@@ -57,14 +62,15 @@ function JobSwipe({userInfo}) {
   const halfCardWidth = cardWidth / 2;
   const maxTilt = 20;
 
-  useEffect(()=>{
-  getMyJobs();
-  },[])
+  useEffect(() => {
+    // getMyJobs();
+    getApplications();
+  }, []);
 
   // useEffect(()=>{
   //  if(jobData && !jobData?.length)
   //  {
-      
+
   //  }
   // },[jobData])
 
@@ -94,98 +100,92 @@ function JobSwipe({userInfo}) {
     if (!selection) return;
 
     if (selection === "reject") {
-      rejectJob();
+      rejectJobApplication();
     } else if (selection === "accept") {
-      applyJob();
+      applyJobApplication();
     }
   };
 
-  const rejectJob = async () => {
-    if (!currentJobApplication) return;
-
-    //logic for api call to reject resume
-
-    let payload = {
-      jobId:currentJobApplication._id,
-            candidateId:userInfo._id,
-            applicationStatus:"notintrested"
-    };
-    await axios.post(process.env.REACT_APP_APPLY_JOB, payload, {
-      headers: { Authorization: "Bearer " + localStorage.getItem("CandidateToken") },
-    })
-    .then((res) => {
-    
-      console.log("rejectJob", res.data);
-      
-     
-      
-    })
-    .catch((e) => {
-      console.log("rejectJob e",e);
- 
-    
-    });
-
-
-    console.log("resume to reject", currentJobApplication);
-
-    let newResumeData = jobData.filter(
-      (item) => item._id !== currentJobApplication._id
-    );
-    setJobData(newResumeData);
-    if (newResumeData.length) setCurrentJobApplication(newResumeData[0]);
-    else
-      // setCurrentJobApplication({
-      //   _id: "",
-      //   name: "",
-      //   tags: "",
-      //   summary: "",
-      // });
-      getMyJobs();
-  };
-
-  const applyJob = async () => {
+  const rejectJobApplication = async () => {
     if (!currentJobApplication) return;
 
     //logic for api call to select resume
 
     let payload = {
-      jobId:currentJobApplication._id,
-            candidateId:userInfo._id,
-            applicationStatus:"intrested"
+      jobId: jobId,
+      candidateId: currentJobApplication._id,
+      applicationStatus: "rejected",
     };
-    await axios.post(process.env.REACT_APP_APPLY_JOB, payload, {
-      headers: { Authorization: "Bearer " + localStorage.getItem("CandidateToken") },
-    })
-    .then((res) => {
-    
-      console.log("rejectJob", res.data);
-      
-     
-      
-    })
-    .catch((e) => {
-      console.log("rejectJob e",e);
- 
-    
-    });
 
+    console.log("applyJobApplication payload", payload);
+    await axios
+      .post(process.env.REACT_APP_UPDATE_JOB_APPLICATION, payload, {
+        headers: {
+          Authorization: "Bearer " + localStorage.getItem("RecruiterToken"),
+        },
+      })
+      .then((res) => {
+        console.log("rejectJob", res.data);
+      })
+      .catch((e) => {
+        console.log("rejectJob e", e);
+      });
 
     console.log("resume to select", currentJobApplication);
 
-    let newResumeData = jobData.filter(
+    let newResumeData = applicationData.filter(
       (item) => item._id !== currentJobApplication._id
     );
-    setJobData(newResumeData);
+    setApplicationData(newResumeData);
     if (newResumeData.length) setCurrentJobApplication(newResumeData[0]);
-    else
-      // setCurrentJobApplication({
-      //   id: "",
-      //   name: "",
-      //   tags: "",
-      //   summary: "",
-      // });
-      getMyJobs();
+    // setCurrentJobApplication({
+    //   id: "",
+    //   name: "",
+    //   tags: "",
+    //   summary: "",
+    // });
+    else getApplications();
+  };
+
+  const applyJobApplication = async () => {
+    if (!currentJobApplication) return;
+
+    //logic for api call to select resume
+
+    let payload = {
+      jobId: jobId,
+      candidateId: currentJobApplication._id,
+      applicationStatus: "shortlisted",
+    };
+
+    console.log("applyJobApplication payload", payload);
+    await axios
+      .post(process.env.REACT_APP_UPDATE_JOB_APPLICATION, payload, {
+        headers: {
+          Authorization: "Bearer " + localStorage.getItem("RecruiterToken"),
+        },
+      })
+      .then((res) => {
+        console.log("rejectJob", res.data);
+      })
+      .catch((e) => {
+        console.log("rejectJob e", e);
+      });
+
+    console.log("resume to select", currentJobApplication);
+
+    let newResumeData = applicationData.filter(
+      (item) => item._id !== currentJobApplication._id
+    );
+    setApplicationData(newResumeData);
+    if (newResumeData.length) setCurrentJobApplication(newResumeData[0]);
+    // setCurrentJobApplication({
+    //   id: "",
+    //   name: "",
+    //   tags: "",
+    //   summary: "",
+    // });
+    else getApplications();
   };
 
   const onDragStart = (event) => {
@@ -218,41 +218,70 @@ function JobSwipe({userInfo}) {
     if (event.target.id === "accept") {
       setShowAcceptImage(true);
       setTimeout(() => setShowAcceptImage(false), 500);
-    } else if((event.target.id === "reject")) {
+    } else if (event.target.id === "reject") {
       setShowRejecttImage(true);
       setTimeout(() => setShowRejecttImage(false), 500);
     }
     setSelection(event.target.id);
   };
 
-
   const getMyJobs = async () => {
     let payload = {
-      "userId":userInfo._id
-     }
-    await axios.post(process.env.REACT_APP_GET_JOBS_FOR_ME, payload, {
-      headers: { Authorization: "Bearer " + localStorage.getItem("CandidateToken") },
-    })
-    .then((res) => {
-    
-      console.log("getMyJobs", res.data);
-      
-      let newJobData = res.data.jobs;
-      if(newJobData?.length)
-      {
-        setCurrentJobApplication(newJobData[0]);
-        newJobData.splice(0, 1);
-      }
-       
-      setJobData(newJobData);
-      
-    })
-    .catch((e) => {
-      console.log("getMyJobs e",e);
- 
-    
-    });
-  }
+      userId: userInfo._id,
+    };
+    await axios
+      .post(process.env.REACT_APP_GET_JOBS_FOR_ME, payload, {
+        headers: {
+          Authorization: "Bearer " + localStorage.getItem("CandidateToken"),
+        },
+      })
+      .then((res) => {
+        console.log("getMyJobs", res.data);
+
+        let newJobData = res.data.jobs;
+        if (newJobData?.length) {
+          setCurrentJobApplication(newJobData[0]);
+          newJobData.splice(0, 1);
+        }
+
+        // setJobData(newJobData);
+      })
+      .catch((e) => {
+        console.log("getMyJobs e", e);
+      });
+  };
+
+  const getApplications = async () => {
+    let payload = {};
+    // console.log(
+    //   "here getApplications",
+    //   process.env.REACT_APP_JOB_APPLICATIONS,
+    //   jobId
+    // );
+    await axios
+      .post(
+        process.env.REACT_APP_JOB_APPLICATIONS + "/" +jobId,
+        {},
+        {
+          headers: {
+            Authorization: "Bearer " + localStorage.getItem("RecruiterToken"),
+          },
+        }
+      )
+      .then((res) => {
+        console.log("getApplications", res);
+        let newJobData = res.data.jobApplications;
+        console.log("newJobData", newJobData);
+        if (newJobData?.length) {
+          setApplicationData(newJobData);
+          setCurrentJobApplication(newJobData[0]);
+          // newJobData.splice(0, 1);
+        }
+      })
+      .catch((e) => {
+        console.log("getApplications error", e);
+      });
+  };
   return (
     <div
       style={{ backgroundColor: "rgb(18,18,30)" }}
@@ -277,8 +306,12 @@ function JobSwipe({userInfo}) {
           <img src={require("../assets/notIntrested.png")} alt="Checked" />
         </div>
       </div>
-      {!jobData.length ? (
-        <div></div>
+      {!applicationData.length ? (
+        <div className="w-[1/3] flex justify-center items-center h-screen text-white" >
+          <svg xmlns="http://www.w3.org/2000/svg" width="34" height="34" fill="white" class="bi bi-ban" viewBox="0 0 16 16">
+  <path d="M15 8a6.97 6.97 0 0 0-1.71-4.584l-9.874 9.875A7 7 0 0 0 15 8M2.71 12.584l9.874-9.875a7 7 0 0 0-9.874 9.874ZM16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0"/>
+</svg> &nbsp; No Data Found, Please Try Again!
+        </div>
       ) : (
         <div className=" w-[1/3] flex justify-center items-center h-screen">
           {isDragging && !isVisible && (
@@ -305,25 +338,32 @@ function JobSwipe({userInfo}) {
               </div> */}
               <div class="w-[400px] h-[500px] cursor-pointer p-4 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
                 <div className="flex">
-                  <div className="w-[10%]">
-                    <img
-                      className="image-cover"
-                      src={currentJobApplication.companyImage                      }
-                    ></img>
+                  <div className="w-[100%]">
+                    <h2>Basic Details</h2>
+                    <p className="text-white">
+                      <span className="text-gray">Name:</span>{" "}
+                      {currentJobApplication.firstName}{" "}
+                      {currentJobApplication.lastName}
+                      <br />
+                      <span>Email:</span> {currentJobApplication.email} <br />
+                      <span>Phone:</span> {currentJobApplication.phone} <br />
+                    </p>
                   </div>
                   <div className="w-[90%] pl-2">
                     <h5 class="mb-2 text-xl font-bold tracking-tight text-gray-900 dark:text-white">
-                      {currentJobApplication.company} -{" "}
-                      {currentJobApplication.position}
+                      {/* {currentJobApplication.company} -{" "}
+                      {currentJobApplication.position} */}
                     </h5>
                   </div>
                 </div>
                 <div class="card__content  space-y-1">
                   <span className="text-white">
-                  {currentJobApplication.skillsRequired.join(", ")}
+                    {/* {currentJobApplication.skillsRequired.join(", ")} */}
                   </span>
                   <h2>Summary:</h2>
-                  <p className="text-white">{currentJobApplication.roleDescription}</p>
+                  <p className="text-white">
+                    {currentJobApplication?.description}
+                  </p>
                 </div>
               </div>
             </div>
@@ -353,23 +393,36 @@ function JobSwipe({userInfo}) {
 
             <div class="w-[400px] h-[500px] cursor-pointer p-4 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
               <div className="flex">
-                <div className="w-[10%]">
-                  <img
+                <div className="w-[100%]">
+                  {/* <img
                     className="image-cover"
-                    src={currentJobApplication.companyImage}
-                  ></img>
+                    // src={currentJobApplication.companyImage}
+                  ></img> */}
+                  <h2>Basic Details</h2>
+                  <p className="text-white">
+                    <span className="text-gray">Name:</span>{" "}
+                    {currentJobApplication.firstName}{" "}
+                    {currentJobApplication.lastName}
+                    <br />
+                    <span>Email:</span> {currentJobApplication.email} <br />
+                    <span>Phone:</span> {currentJobApplication.phone} <br />
+                  </p>
                 </div>
                 <div className="w-[90%] pl-2">
                   <h5 class="mb-2 text-xl font-bold tracking-tight text-gray-900 dark:text-white">
-                    {currentJobApplication.company} -{" "}
-                    {currentJobApplication.position}
+                    {/* {currentJobApplication.company} -{" "}
+                    {currentJobApplication.position} */}
                   </h5>
                 </div>
               </div>
               <div class="card__content  space-y-1">
-                <span className="text-white">{currentJobApplication.skillsRequired.join(", ")}</span>
+                <span className="text-white">
+                  {/* {currentJobApplication.skillsRequired.join(", ")} */}
+                </span>
                 <h2>Summary:</h2>
-                <p className="text-white">{currentJobApplication.roleDescription}</p>
+                <p className="text-white">
+                  {currentJobApplication?.description}
+                </p>
               </div>
             </div>
           </div>
@@ -416,4 +469,4 @@ function JobSwipe({userInfo}) {
   );
 }
 
-export default JobSwipe;
+export default ApplicationSwipe;

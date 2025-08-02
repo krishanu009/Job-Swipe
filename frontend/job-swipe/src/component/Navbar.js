@@ -37,7 +37,7 @@ function Navbar() {
 
     window.addEventListener('mousemove', editCursor);
 
-    // Cleanup event listeners on component unmount
+  
     return () => {
       links.forEach((link) => {
         link.removeEventListener('mousemove', (e) => animateit(e, link));

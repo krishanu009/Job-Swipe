@@ -132,7 +132,7 @@ function NewJobApplication({ logout, userInfo, getUser }) {
     }
     setUpdatingUser(true);
     await axios.post(process.env.REACT_APP_UPDATE_USER_BY_ID + "/" + userInfo._id, payload, {
-      headers: { Authorization: "Bearer " + localStorage.getItem("token") },
+      headers: { Authorization: "Bearer " + localStorage.getItem("CandidateToken") },
     })
     .then((res) => {
     

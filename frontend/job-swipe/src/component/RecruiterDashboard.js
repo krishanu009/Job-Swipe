@@ -6,7 +6,9 @@ import Home from "./Home";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { jwtDecode } from "jwt-decode";
-function Dashboard() {
+import ApplicationSwipe from "./ApplicationSwipe";
+import PostedApplication from "./PostedApplication";
+function RecruiterDashboard() {
     const [selectedPage, setSelectedPage] = useState("home");
     const [user,setUser] = useState("");
     const [userInfo,setUserInfo] = useState("");
@@ -15,8 +17,8 @@ function Dashboard() {
 
     useEffect(()=>{
       if (
-        localStorage.getItem('CandidateToken') == "" ||
-        localStorage.getItem('CandidateToken') == null
+        localStorage.getItem('RecruiterToken') == "" ||
+        localStorage.getItem('RecruiterToken') == null
       ) {
         navigate("/");
       } else {
@@ -25,7 +27,7 @@ function Dashboard() {
     },[]);
 
     useEffect(() => {
-      const token = localStorage.getItem('CandidateToken');
+      const token = localStorage.getItem('RecruiterToken');
       if (token) {
         // fetchAndSetLocalData();
         const expirationTime = getTokenExpiration(token);
@@ -46,15 +48,15 @@ function Dashboard() {
       }
     }, []);
     const logout = () => {
-      localStorage.removeItem('CandidateToken');
+      localStorage.removeItem('RecruiterToken');
       navigate("/");
     }
 
     const getUser = async () => {
-      console.log('CandidateToken',localStorage.getItem('CandidateToken'));
+      console.log('RecruiterToken',localStorage.getItem('RecruiterToken'));
       axios
         .get("/user/current", {
-          headers: { Authorization: "Bearer " + localStorage.getItem('CandidateToken') },
+          headers: { Authorization: "Bearer " + localStorage.getItem('RecruiterToken') },
         })
         .then((r) => {
 
@@ -95,7 +97,7 @@ function Dashboard() {
         <Header selectedPage={selectedPage} setSelectedPage={setSelectedPage} />
       </div>
       <div className="p-8 relative z-0">
-        {selectedPage === 'job' && <JobSwipe userInfo={userInfo} />}
+        {selectedPage === 'job' && <PostedApplication userInfo = {user}></PostedApplication>}
         {selectedPage === 'profile' && <NewJobApplication logout={logout} userInfo={userInfo} getUser={getUser}></NewJobApplication>}
         {selectedPage ==='home' && <Home></Home>}
       </div>
@@ -103,4 +105,4 @@ function Dashboard() {
   )
 }
 
-export default Dashboard
+export default RecruiterDashboard
