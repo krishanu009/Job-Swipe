@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import "../styling/swipe.css";
 import axios from "axios";
 import { useLocation } from "react-router-dom";
-function ApplicationSwipe() {
+function ApplicationSwipe({userInfo,jobId}) {
   const location = useLocation();
   const [isDragging, setIsDragging] = useState(false);
   const [isVisible, setIsVisible] = useState(true);
@@ -13,7 +13,7 @@ function ApplicationSwipe() {
   const [showAcceptImage, setShowAcceptImage] = useState(false);
   const [showRejecttImage, setShowRejecttImage] = useState(false);
   const [currentJobApplication, setCurrentJobApplication] = useState("");
-  const { userInfo, jobId } = location.state || {};
+  // const { userInfo, jobId } = location.state || {};
   // console.log("erehere",{userInfo,jobId});
 
   // const [jobData, setJobData] = useState([
@@ -252,22 +252,20 @@ function ApplicationSwipe() {
   };
 
   const getApplications = async () => {
-    let payload = {};
+    let payload = {
+      applicationStatus: "intrested",
+    };
     // console.log(
     //   "here getApplications",
     //   process.env.REACT_APP_JOB_APPLICATIONS,
     //   jobId
     // );
     await axios
-      .post(
-        process.env.REACT_APP_JOB_APPLICATIONS + "/" +jobId,
-        {},
-        {
-          headers: {
-            Authorization: "Bearer " + localStorage.getItem("RecruiterToken"),
-          },
-        }
-      )
+      .post(process.env.REACT_APP_JOB_APPLICATIONS + "/" + jobId, payload, {
+        headers: {
+          Authorization: "Bearer " + localStorage.getItem("RecruiterToken"),
+        },
+      })
       .then((res) => {
         console.log("getApplications", res);
         let newJobData = res.data.jobApplications;
@@ -285,7 +283,7 @@ function ApplicationSwipe() {
   return (
     <div
       style={{ backgroundColor: "rgb(18,18,30)" }}
-      className="h-screen grid grid-cols-3 gap-4 main"
+      className="h-screen grid grid-cols-3 gap-2 main"
     >
       <div
         onDragOver={(e) => {
@@ -307,11 +305,28 @@ function ApplicationSwipe() {
         </div>
       </div>
       {!applicationData.length ? (
-        <div className="w-[1/3] flex justify-center items-center h-screen text-white" >
-          <svg xmlns="http://www.w3.org/2000/svg" width="34" height="34" fill="white" class="bi bi-ban" viewBox="0 0 16 16">
-  <path d="M15 8a6.97 6.97 0 0 0-1.71-4.584l-9.874 9.875A7 7 0 0 0 15 8M2.71 12.584l9.874-9.875a7 7 0 0 0-9.874 9.874ZM16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0"/>
-</svg> &nbsp; No Data Found, Please Try Again!
-        </div>
+        <div className="flex flex-col justify-center items-center h-full text-center text-white space-y-4">
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="48"
+    height="48"
+    fill="none"
+    viewBox="0 0 24 24"
+    stroke="currentColor"
+    className="text-red-400"
+  >
+    <path
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth={2}
+      d="M18.364 5.636l-12.728 12.728m0-12.728l12.728 12.728"
+    />
+  </svg>
+  <h2 className="text-xl font-semibold">No Application Found</h2>
+  <p className="text-gray-400 max-w-md">
+    We couldn't find any applications. Please try again later or refine your search.
+  </p>
+</div>
       ) : (
         <div className=" w-[1/3] flex justify-center items-center h-screen">
           {isDragging && !isVisible && (

@@ -267,55 +267,52 @@ const getCreatedJobs = async (req, res) => {
 };
 
 const getJobApplications = async (req, res) => {
-  if (!req.user.id) {
-    res.status(400);
-    throw new Error("Error in fetching job applications");
+  try {
+    if (!req.user?.id) {
+      return res.status(400).json({ success: false, message: "User ID missing" });
+    }
+
+    const { applicationStatus } = req.body;
+    const jobId = req.params.id;
+
+    if (!jobId) {
+      return res.status(400).json({ success: false, message: "Job ID is mandatory" });
+    }
+
+    const jobs = await Job.find({ hrId: req.user.id });
+
+    if (!jobs || jobs.length === 0) {
+      return res.status(404).json({ success: false, message: "No jobs found for this user" });
+    }
+
+    const findObj = jobs.find((el) => el._id.toString() === jobId);
+
+    if (!findObj) {
+      return res.status(404).json({ success: false, message: "No Job Found with this ID" });
+    }
+
+    const jobApplications = await Applied.find({
+      jobId,
+      applicationStatus,
+    }).select("candidateId");
+
+    const candidateIds = jobApplications.map(app => app.candidateId);
+
+    const candidates = await User.find({ _id: { $in: candidateIds } }).select(
+      "firstName lastName email phone address experiance project"
+    );
+
+    return res.status(200).json({
+      success: true,
+      message: "Applications retrieved successfully",
+      jobApplications: candidates,
+    });
+  } catch (error) {
+    console.error("Error in getJobApplications:", error);
+    return res.status(500).json({ success: false, message: "Server error" });
   }
-
-  const jobs = await Job.find({ hrId: req.user.id });
-  let jobId = req.params.id;
-  // console.log("jobs", jobs);
-
-  // console.log("job id", jobId);
-
-  if (!jobId) {
-    res.status(400);
-    throw new Error("Job Id is mandatory!");
-  }
-
-  let findObj = jobs.find((el) => el._id == jobId);
-
-  // console.log("findObj ",findObj );
-
-  if (!findObj) {
-    res.status(400);
-    throw new Error("No Job Found with this id!");
-  }
-
-  const jobApplications = await Applied.find({
-    jobId: jobId,
-    applicationStatus: "intrested",
-  }).select("candidateId");
-  const candidateIds = jobApplications.map(
-    (application) => application.candidateId
-  );
-  // console.log("jobapplications", jobApplications);
-  // console.log("candidateIds", candidateIds);
-
-  const candidates = await User.find({ _id: { $in: candidateIds } }).select(
-    "firstName lastName email phone address experiance project"
-  );
-  // candidates;
-
-  // console.log("candidates", candidates);
-
-  res.status(200).json({
-    success: true,
-    message: "applications retrieved successfully",
-    jobApplications: candidates,
-  });
-  // let findObj = jobs.find()
 };
+
 
 module.exports = {
   getAvailableJobs,

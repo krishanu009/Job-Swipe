@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
-function PostedApplication({userInfo}) {
+function PostedApplication({userInfo,setSelectedJob,setSelectedPage}) {
 
   console.log("PostedApplication userinfo",userInfo);
   const [createdJobs, setCreatedJobs] = useState([]);
+  const [showJobModal,setShowJobModal] = useState(false);
   useEffect(() => {
     getPostedApplication();
   }, []);
@@ -88,100 +89,127 @@ function PostedApplication({userInfo}) {
     await getPostedApplication();
   };
 
-  return (
-    <div className="pl-16 pr-16">
-      <div className="pb-2">
-        <button
-          type="button"
-          className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-        >
-          New Job
-        </button>
-      </div>
-      <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
-        <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-          <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-            <tr>
-              <th scope="col" className="px-6 py-3">
-                Position
-              </th>
-              <th scope="col" className="px-6 py-3">
-                Deadline
-              </th>
-              <th scope="col" className="px-6 py-3">
-                Status
-              </th>
-              <th scope="col" className="px-6 py-3">
-                Applications
-              </th>
-               <th scope="col" className="px-6 py-3">
-                Shortlisted
-              </th>
-              <th scope="col" className="px-6 py-3">
-                <span className="sr-only">Edit</span>
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {createdJobs.map((item) => (
-              <tr key={item._id} className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-                <th
-                  scope="row"
-                  className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
-                >
-                  {item.position}
-                </th>
-                <td className="px-6 py-4">{formatDate(item.deadline)}</td>
-                <td className="px-6 py-4">
-                  <label className="inline-flex items-center cursor-pointer">
-                    <input
-                      name={item._id}
-                      onChange={(e) => handleStatusChange(e, item._id)}
-                      checked={item.jobStatus === "active"}
-                      type="checkbox"
-                      className="sr-only peer"
-                    />
-                    <div className="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
-                    <span className="ms-3 text-sm font-medium text-gray-900 dark:text-gray-300">
-                      {item.jobStatus === "active" ? "Active" : "Inactive"}
-                    </span>
-                  </label>
-                </td>
-                <td className="px-6 py-4 text-blue-600 dark:text-yellow-500 hover:underline">
-                  <Link
-                    to={{
-                      pathname: `/applications`,
-                    }}
-                    state={{ userInfo: userInfo,jobId:item._id }}
-                  >
-                    {item.applicantsCount}
-                  </Link>
-                </td>
+  const handleJobSelect = (job) => {
+    console.log("handleJobSelect job",job);
+    setSelectedJob(job);
+setSelectedPage("applicationSwipe");
+  }
 
-                <td className="px-6 py-4 text-blue-600 dark:text-green-500 hover:underline">
-                  <Link
-                    to={{
-                      pathname: `/shortlisted`,
-                    }}
-                    state={{ userInfo: userInfo,jobId:item._id }}
-                  >
-                    {item.shortlisted}
-                  </Link>
-                </td>
-                <td className="px-6 py-4 text-right">
-                  <a
-                    href="#"
-                    className="font-medium text-blue-600 dark:text-blue-500 hover:underline"
-                  >
-                    Edit
-                  </a>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+   const handleShortlistSelect = (job) => {
+    console.log("handleJobSelect job",job);
+    setSelectedJob(job);
+setSelectedPage("shortlisted");
+  }
+
+ const handleNewJobModal = () => {
+   setShowJobModal(!showJobModal)
+ }
+
+  return (
+
+    <><div>
+
     </div>
+    
+    <div className="pl-16 pr-16">
+        <div className="pb-2">
+          <button
+            type="button"
+            className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+          >
+            New Job
+          </button>
+        </div>
+        <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
+          <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+            <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+              <tr>
+                <th scope="col" className="px-6 py-3">
+                  Position
+                </th>
+                <th scope="col" className="px-6 py-3">
+                  Deadline
+                </th>
+                <th scope="col" className="px-6 py-3">
+                  Status
+                </th>
+                <th scope="col" className="px-6 py-3">
+                  Applications
+                </th>
+                <th scope="col" className="px-6 py-3">
+                  Shortlisted
+                </th>
+                <th scope="col" className="px-6 py-3">
+                  <span className="sr-only">Edit</span>
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {createdJobs.map((item) => (
+                <tr key={item._id} className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+                  <th
+                    scope="row"
+                    className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
+                  >
+                    {item.position}
+                  </th>
+                  <td className="px-6 py-4">{formatDate(item.deadline)}</td>
+                  <td className="px-6 py-4">
+                    <label className="inline-flex items-center cursor-pointer">
+                      <input
+                        name={item._id}
+                        onChange={(e) => handleStatusChange(e, item._id)}
+                        checked={item.jobStatus === "active"}
+                        type="checkbox"
+                        className="sr-only peer" />
+                      <div className="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
+                      <span className="ms-3 text-sm font-medium text-gray-900 dark:text-gray-300">
+                        {item.jobStatus === "active" ? "Active" : "Inactive"}
+                      </span>
+                    </label>
+                  </td>
+                  <td className="px-6 py-4 text-blue-600 dark:text-yellow-500 hover:cursor-pointer" onClick={(event) => {
+                    handleJobSelect(item._id);
+                  } }>
+                    {/* <Link
+              to={{
+                pathname: `/applications`,
+              }}
+              state={{ userInfo: userInfo,jobId:item._id }}
+            >
+              {item.applicantsCount}
+            </Link> */}
+
+                    {item.applicantsCount}
+                  </td>
+
+                  <td className="px-6 py-4 text-blue-600 dark:text-green-500 hover:cursor-pointer" onClick={(e) => {
+                    handleShortlistSelect(item._id);
+                  } }>
+                    {/* <Link
+              to={{
+                pathname: `/shortlisted`,
+              }}
+              state={{ userInfo: userInfo,jobId:item._id }}
+            >
+              {item.shortlisted}
+            </Link> */}
+                    {item.shortlisted}
+                  </td>
+                  <td className="px-6 py-4 text-right">
+                    <a
+                      href="#"
+                      className="font-medium text-blue-600 dark:text-blue-500 hover:underline"
+                    >
+                      Edit
+                    </a>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div></>
   );
 }
 

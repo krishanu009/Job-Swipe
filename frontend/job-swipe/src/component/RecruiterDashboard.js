@@ -8,6 +8,7 @@ import axios from "axios";
 import { jwtDecode } from "jwt-decode";
 import ApplicationSwipe from "./ApplicationSwipe";
 import PostedApplication from "./PostedApplication";
+import RecruiterJobPostingDashboard from "./RecruiterJobPostingDashboard";
 function RecruiterDashboard() {
     const [selectedPage, setSelectedPage] = useState("home");
     const [user,setUser] = useState("");
@@ -96,8 +97,9 @@ function RecruiterDashboard() {
       <div className="sticky top-0 z-10">
         <Header selectedPage={selectedPage} setSelectedPage={setSelectedPage} />
       </div>
-      <div className="p-8 relative z-0">
-        {selectedPage === 'job' && <PostedApplication userInfo = {user}></PostedApplication>}
+      <div className="relative z-0">
+        {/* {selectedPage === 'job' && <PostedApplication userInfo = {user}></PostedApplication>} */}
+        {selectedPage === 'job' && <RecruiterJobPostingDashboard userInfo = {user}></RecruiterJobPostingDashboard>}
         {selectedPage === 'profile' && <NewJobApplication logout={logout} userInfo={userInfo} getUser={getUser}></NewJobApplication>}
         {selectedPage ==='home' && <Home></Home>}
       </div>
