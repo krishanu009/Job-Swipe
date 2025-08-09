@@ -3,6 +3,7 @@ const asyncHandler = require("express-async-handler");
 const Job = require("../models/jobModel");
 const Applied = require("../models/appliedModel");
 const User = require("../models/userModel");
+const aiEngine = require("../services/aiEngine");
 const moment = require("moment");
 //@desc get jobs based on candidate
 //@route POST /api/job/jobForMe
@@ -195,20 +196,32 @@ const updateJobApplication = async (req, res) => {
     });
   }
 };
+// async function someFunction(req, res) {
+//   try {
+//     const { generateAiResponse } = await import('../services/aiEngine.mjs'); // ✅ dynamic import
 
+//     const result = await generateAiResponse("your input");
+//     res.send(result);
+//   } catch (err) {
+//     console.error("AI error:", err);
+//     res.status(500).send("AI failed");
+//   }
+// }
 const getCreatedJobs = async (req, res) => {
   try {
     // console.log("getCreatedJobs", req.user);
-
-    if (!req.user.id) {
-      res.status(400);
-      throw new Error("Error in fetching jobs!");
-    }
+// await someFunction(req, res)
+//     if (!req.user.id) {
+//       res.status(400);
+//       throw new Error("Error in fetching jobs!");
+//     }
 
     // const jobs = [
     //   { id: 1, title: "Software Engineer", createdBy: req.user.id },
     //   { id: 2, title: "Project Manager", createdBy: req.user.id },
     // ];
+
+    // aiEngine.generate("How are you gemini?");
 
     const jobs = await Job.find({ hrId: req.user.id });
     let jobCountData = {};

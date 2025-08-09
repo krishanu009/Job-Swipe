@@ -3,7 +3,7 @@ import axios from "axios";
 import { Link } from "react-router-dom";
 function PostedApplication({userInfo,setSelectedJob,setSelectedPage}) {
 
-  console.log("PostedApplication userinfo",userInfo);
+
   const [createdJobs, setCreatedJobs] = useState([]);
   const [showJobModal,setShowJobModal] = useState(false);
   useEffect(() => {
@@ -101,15 +101,11 @@ setSelectedPage("applicationSwipe");
 setSelectedPage("shortlisted");
   }
 
- const handleNewJobModal = () => {
-   setShowJobModal(!showJobModal)
- }
-
+ 
+  
   return (
 
-    <><div>
-
-    </div>
+    <>
     
     <div className="pl-16 pr-16">
         <div className="pb-2">

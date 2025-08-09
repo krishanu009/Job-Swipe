@@ -185,6 +185,8 @@ const updateUser = asyncHandler(async (req, res) => {
     res.status(400);
     throw new Error("Error in updating product");
   }
+
+  console.log("update body",req.body);
   const updatedUser = await User.findByIdAndUpdate(req.params.id, req.body, {
     new: true,
   });
