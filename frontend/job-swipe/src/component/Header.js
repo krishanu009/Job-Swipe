@@ -1,11 +1,16 @@
 import React, { useState } from "react";
 
 function Header({selectedPage,setSelectedPage}) {
-  
-
+  console.log("selectedPage",selectedPage);
+ const handleBackButton = () => {
+    setSelectedPage("postedJobs");
+  }
   return (
     <div className="sticky">
+
+    
       <div className="w-[100%] flex justify-center items-center h-[20%] pt-4">
+    
         <div className="shadow-2xl w-[50%] bg-[#131320] h-full p-2 cursor-pointer rounded-3xl">
           <div className="grid grid-cols-3 gap-4">
             {/* jobs */}

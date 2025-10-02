@@ -312,7 +312,7 @@ const getJobApplications = async (req, res) => {
     const candidateIds = jobApplications.map(app => app.candidateId);
 
     const candidates = await User.find({ _id: { $in: candidateIds } }).select(
-      "firstName lastName email phone address experiance project"
+      "firstName lastName email phone address experiance project description"
     );
 
     return res.status(200).json({

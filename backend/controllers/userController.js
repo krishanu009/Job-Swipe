@@ -1,5 +1,5 @@
 const asyncHandler = require("express-async-handler");
-
+const aiEngine = require("../services/aiEngine");
 const User = require("../models/userModel");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
@@ -24,7 +24,7 @@ const getUserById = asyncHandler(async (req, res) => {
     throw new Error("User ID is mandatory!");
   }
 
-  console.log("get user id", id);
+  // console.log("get user id", id);
 
   try {
     const user = await User.findById(id);
@@ -172,7 +172,7 @@ const loginUser = asyncHandler(async (req, res) => {
 //@access public
 
 const currentUser = asyncHandler(async (req, res) => {
-  console.log("here");
+  // console.log("here");
   res.status(200).json(req.user);
 });
 
@@ -186,12 +186,21 @@ const updateUser = asyncHandler(async (req, res) => {
     throw new Error("Error in updating product");
   }
 
-  console.log("update body",req.body);
+  // console.log("update body",req.body);
+
+  
   const updatedUser = await User.findByIdAndUpdate(req.params.id, req.body, {
     new: true,
   });
-
+  // console.log("here");
   if (updatedUser) {
+
+    let userDesc = await aiEngine.generateUserDescription(updatedUser);
+    console.log("userDesc",userDesc);
+    if(userDesc)
+    await User.findByIdAndUpdate(req.params.id, {description:userDesc}, {
+    new: true,
+  });
     res.status(200).json(updatedUser);
   } else {
     res.status(400);

@@ -13,47 +13,7 @@ function ApplicationSwipe({userInfo,jobId}) {
   const [showAcceptImage, setShowAcceptImage] = useState(false);
   const [showRejecttImage, setShowRejecttImage] = useState(false);
   const [currentJobApplication, setCurrentJobApplication] = useState("");
-  // const { userInfo, jobId } = location.state || {};
-  // console.log("erehere",{userInfo,jobId});
-
-  // const [jobData, setJobData] = useState([
-  //   {
-  //     id: "1",
-  //     company: "Google",
-  //     image:"https://storage.googleapis.com/support-kms-prod/ZAl1gIwyUsvfwxoW9ns47iJFioHXODBbIkrK",
-  //     tags: "Ai, SWE, Javascript, Python",
-  //     position: "SDE",
-  //     summary:
-  //       "is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
-  //   },
-  //   {
-  //     id: "2",
-  //     company: "Microsoft",
-  //     image:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRnB4S_PLzShRNMQHMpKdvaC5CpoG3RBcR3dA&s",
-  //     tags: "Ai, Machin learning",
-  //     position: "ML Engineer",
-  //     summary:
-  //       "is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
-  //   },
-  //   {
-  //     id: "3",
-  //     company: "Open Ai",
-  //     image:"https://meta-q.cdn.bubble.io/f1711468032745x149459509062566560/openai-2.svg",
-  //     tags: "Ai, NLP",
-  //     position: "AI Engineer",
-  //     summary:
-  //       "is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
-  //   },
-  //   {
-  //     id: "4",
-  //     company: "Tesla",
-  //     image:"https://upload.wikimedia.org/wikipedia/commons/thumb/b/bd/Tesla_Motors.svg/800px-Tesla_Motors.svg.png",
-  //     tags: "Web Dev",
-  //     position: "SDE",
-  //     summary:
-  //       "is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
-  //   },
-  // ]);
+  
   const [applicationData, setApplicationData] = useState([]);
   const [resumeShortlisted, setResumeShortlisted] = useState([]);
   const [resumeRejected, setResumeRejected] = useState([]);
@@ -67,12 +27,7 @@ function ApplicationSwipe({userInfo,jobId}) {
     getApplications();
   }, []);
 
-  // useEffect(()=>{
-  //  if(jobData && !jobData?.length)
-  //  {
-
-  //  }
-  // },[jobData])
+  
 
   useEffect(() => {
     setIsVisible(!screenX);
@@ -351,7 +306,7 @@ function ApplicationSwipe({userInfo,jobId}) {
                   <p>{currentResume.summary}</p>
                 </div>
               </div> */}
-              <div class="w-[400px] h-[500px] cursor-pointer p-4 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
+              <div class="w-[400px] h-[550px] cursor-pointer p-4 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
                 <div className="flex">
                   <div className="w-[100%]">
                     <h2>Basic Details</h2>
@@ -406,7 +361,7 @@ function ApplicationSwipe({userInfo,jobId}) {
               </div>
             </div> */}
 
-            <div class="w-[400px] h-[500px] cursor-pointer p-4 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
+            <div class="w-[400px] h-[550px] cursor-pointer p-4 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
               <div className="flex">
                 <div className="w-[100%]">
                   {/* <img
@@ -449,7 +404,7 @@ function ApplicationSwipe({userInfo,jobId}) {
             }}
             className=""
           >
-            <div className="w-[400px] h-[500px] cursor-pointer p-4 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
+            <div className="w-[400px] h-[550px] cursor-pointer p-4 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
               <div class="card__content  space-y-4">
                 <h2 className="loading2"></h2>
                 <h2 className="loading2"></h2>

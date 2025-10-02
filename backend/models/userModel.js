@@ -21,6 +21,7 @@ const userSchema = mongoose.Schema({
         type:String,
         required:[true,"PLease add the phone"],
     },
+    
     address:[{
         name:{
             type:String
