@@ -29,23 +29,46 @@ function ApplicationSwipe({userInfo,jobId}) {
 
   
 
-  useEffect(() => {
-    setIsVisible(!screenX);
+  // useEffect(() => {
+  //   setIsVisible(!screenX);
+  //   console.log("screenX",screenX)
+  //   if (screenX > 950) return;
+  //   if (screenX < 500) return;
+  //   const newPosition = Math.min(
+  //     Math.max(screenX - halfCardWidth, 0),
+  //     window.innerWidth - cardWidth
+  //   );
+  //   setPosition(newPosition);
 
-    if (screenX > 950) return;
-    if (screenX < 500) return;
-    const newPosition = Math.min(
-      Math.max(screenX - halfCardWidth, 0),
-      window.innerWidth - cardWidth
-    );
-    setPosition(newPosition);
+  //   const newRotation = Math.min(
+  //     Math.max((screenX - window.innerWidth / 2) / 20, -maxTilt),
+  //     maxTilt
+  //   );
+  //   setRotation(newRotation);
+  // }, [screenX]);
 
-    const newRotation = Math.min(
-      Math.max((screenX - window.innerWidth / 2) / 20, -maxTilt),
-      maxTilt
-    );
-    setRotation(newRotation);
-  }, [screenX]);
+useEffect(() => {
+  setIsVisible(!screenX);
+ 
+  
+  // Use percentages of window width instead of fixed values
+  const screenWidth = window.innerWidth;
+ console.log("screen values", {screenX,screenWidth});
+  if (screenX > screenWidth * 0.7) return; // 70% of screen width
+  if (screenX < screenWidth * 0.3) return; // 30% of screen width
+  
+  const newPosition = Math.min(
+    Math.max(screenX - halfCardWidth, 0),
+    screenWidth - cardWidth
+  );
+  setPosition(newPosition);
+
+  const newRotation = Math.min(
+    Math.max((screenX - screenWidth / 2) / 20, -maxTilt),
+    maxTilt
+  );
+  setRotation(newRotation);
+}, [screenX]);
 
   useEffect(() => {
     if (selection === "neutral") return;
@@ -163,7 +186,8 @@ function ApplicationSwipe({userInfo,jobId}) {
 
   const onDrag = (event) => {
     event.preventDefault();
-    setScreenX(event.screenX);
+    // setScreenX(event.screenX);
+    setScreenX(event.clientX);
     if (event.screenX === 0) setSelection("neutral");
   };
 
