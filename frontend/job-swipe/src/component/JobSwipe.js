@@ -71,8 +71,13 @@ function JobSwipe({userInfo}) {
   useEffect(() => {
     setIsVisible(!screenX);
 
-    if (screenX > 950) return;
-    if (screenX < 500) return;
+    // if (screenX > 950) return;
+    // if (screenX < 500) return;
+
+    const screenWidth = window.innerWidth;
+ console.log("screen values", {screenX,screenWidth});
+  if (screenX > screenWidth * 0.7) return; // 70% of screen width
+  if (screenX < screenWidth * 0.3) return; // 30% of screen width
     const newPosition = Math.min(
       Math.max(screenX - halfCardWidth, 0),
       window.innerWidth - cardWidth
@@ -208,7 +213,8 @@ function JobSwipe({userInfo}) {
 
   const onDrag = (event) => {
     event.preventDefault();
-    setScreenX(event.screenX);
+    // setScreenX(event.screenX);
+    setScreenX(event.clientX);
     if (event.screenX === 0) setSelection("neutral");
   };
 
