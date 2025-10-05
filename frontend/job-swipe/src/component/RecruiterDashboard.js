@@ -9,6 +9,7 @@ import { jwtDecode } from "jwt-decode";
 import ApplicationSwipe from "./ApplicationSwipe";
 import PostedApplication from "./PostedApplication";
 import RecruiterJobPostingDashboard from "./RecruiterJobPostingDashboard";
+import RecruiterHome from "./RecruiterHome";
 function RecruiterDashboard() {
     const [selectedPage, setSelectedPage] = useState("home");
     const [user,setUser] = useState("");
@@ -74,7 +75,7 @@ function RecruiterDashboard() {
     };
   
     const getUserInfo =  async (id) => {
-     await axios.get(process.env.REACT_APP_GET_USER_BY_ID + "/" + id).then((r) => {
+     await axios.get(process.env.REACT_APP_GET_HR_BY_ID + "/" + id).then((r) => {
       console.log("getUserInfo",r.data);
       setUserInfo(r.data);
     })
@@ -99,9 +100,10 @@ function RecruiterDashboard() {
       </div>
       <div className="relative z-0">
         {/* {selectedPage === 'job' && <PostedApplication userInfo = {user}></PostedApplication>} */}
-        {selectedPage === 'job' && <RecruiterJobPostingDashboard userInfo = {user}></RecruiterJobPostingDashboard>}
+        {selectedPage === 'job' && <RecruiterJobPostingDashboard userInfo = {userInfo}></RecruiterJobPostingDashboard>}
         {selectedPage === 'profile' && <NewJobApplication logout={logout} userInfo={userInfo} getUser={getUser}></NewJobApplication>}
-        {selectedPage ==='home' && <Home></Home>}
+        {selectedPage ==='home' && <RecruiterHome></RecruiterHome>}
+
       </div>
     </>
   )

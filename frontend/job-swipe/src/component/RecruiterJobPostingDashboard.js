@@ -7,6 +7,7 @@ import ShortListed from "./ShortListed";
 import NewJob from "./NewJob";
 
 function RecruiterJobPostingDashboard({ userInfo }) {
+  console.log("RecruiterJobPostingDashboard userInfo",userInfo);
   const [selectedPage, setSelectedPage] = useState("postedJobs");
   const [selectedJob, setSelectedJob] = useState([]);
 
@@ -51,7 +52,7 @@ function RecruiterJobPostingDashboard({ userInfo }) {
           <ShortListed jobId={selectedJob}></ShortListed>
         )}
         {selectedPage === "newjob" && (
-          <NewJob userInfo={userInfo} selectedJob={selectedJob}></NewJob>
+          <NewJob userInfo={userInfo}  setSelectedPage={setSelectedPage}></NewJob>
         )}
       </div>
     </>

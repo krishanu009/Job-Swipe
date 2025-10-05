@@ -57,6 +57,8 @@ const createNewJob = async (req, res) => {
       postingDate,
     } = req.body;
 
+    console.log("job controller create new job", req.body);
+
     if (!position || !hrId || !company || !companyImage || !postingDate) {
       res.status(400);
       throw new Error("All the fields are mandatory");
@@ -251,7 +253,7 @@ const getCreatedJobs = async (req, res) => {
     //    el.shortlisted = jobCountData[el._id].shortlisted;
     //    el.applicantsCount = jobCountData[el._id].applicantsCount;
     //  })
-     console.log("jobCountData",jobCountData);
+    //  console.log("jobCountData",jobCountData);
     const enrichedJobs = jobs.map((job) => {
       const jobObj = job.toObject(); // Convert Mongoose document to plain object
       const counts = jobCountData[job._id] || {
