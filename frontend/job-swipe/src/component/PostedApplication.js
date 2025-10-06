@@ -115,14 +115,14 @@ setSelectedPage("shortlisted");
         <div className="pb-2">
           <button
             type="button"
-            className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+            className="text-white bg-sky-500 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-white font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-sky-500 dark:hover:bg-sky-400 dark:focus:ring-sky-100"
           onClick={handleNewJob}>
             New Job
           </button>
         </div>
         <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
           <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-            <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+            <thead className="text-xs text-gray-700 uppercase bg-sky-500 dark:bg-sky-500 dark:text-white">
               <tr>
                 <th scope="col" className="px-6 py-3">
                   Position
@@ -139,9 +139,9 @@ setSelectedPage("shortlisted");
                 <th scope="col" className="px-6 py-3">
                   Shortlisted
                 </th>
-                <th scope="col" className="px-6 py-3">
+                {/* <th scope="col" className="px-6 py-3">
                   <span className="sr-only">Edit</span>
-                </th>
+                </th> */}
               </tr>
             </thead>
             <tbody>
@@ -162,13 +162,13 @@ setSelectedPage("shortlisted");
                         checked={item.jobStatus === "active"}
                         type="checkbox"
                         className="sr-only peer" />
-                      <div className="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
+                      <div className="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-sky-500 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-sky-500"></div>
                       <span className="ms-3 text-sm font-medium text-gray-900 dark:text-gray-300">
                         {item.jobStatus === "active" ? "Active" : "Inactive"}
                       </span>
                     </label>
                   </td>
-                  <td className="px-6 py-4 text-blue-600 dark:text-yellow-500 hover:cursor-pointer" onClick={(event) => {
+                  <td className="px-6 py-4 text-blue-600 dark:text-white hover:cursor-pointer" onClick={(event) => {
                     handleJobSelect(item._id);
                   } }>
                     {/* <Link
@@ -183,7 +183,7 @@ setSelectedPage("shortlisted");
                     {item.applicantsCount}
                   </td>
 
-                  <td className="px-6 py-4 text-blue-600 dark:text-green-500 hover:cursor-pointer" onClick={(e) => {
+                  <td className="px-6 py-4 text-blue-600 dark:text-sky-500 hover:cursor-pointer" onClick={(e) => {
                     handleShortlistSelect(item._id);
                   } }>
                     {/* <Link
@@ -196,14 +196,14 @@ setSelectedPage("shortlisted");
             </Link> */}
                     {item.shortlisted}
                   </td>
-                  <td className="px-6 py-4 text-right">
+                  {/* <td className="px-6 py-4 text-right">
                     <a
                       href="#"
                       className="font-medium text-blue-600 dark:text-blue-500 hover:underline"
                     >
                       Edit
                     </a>
-                  </td>
+                  </td> */}
                 </tr>
               ))}
             </tbody>

@@ -1,6 +1,6 @@
 import React from 'react'
 import { BarChart } from '@mui/x-charts/BarChart';
-
+import { PieChart } from '@mui/x-charts/PieChart';
 function RecruiterHome() {
     const dataset = [
   {
@@ -91,6 +91,71 @@ function RecruiterHome() {
 function valueFormatter(value) {
   return `${value}mm`;
 }
+
+const desktopOS = [
+  {
+    label: 'Windows',
+    value: 72.72,
+  },
+  {
+    label: 'OS X',
+    value: 16.38,
+  },
+  {
+    label: 'Linux',
+    value: 3.83,
+  },
+  {
+    label: 'Chrome OS',
+    value: 2.42,
+  },
+  {
+    label: 'Other',
+    value: 4.65,
+  },
+];
+
+const mobileOS = [
+  {
+    label: 'Android',
+    value: 70.48,
+  },
+  {
+    label: 'iOS',
+    value: 28.8,
+  },
+  {
+    label: 'Other',
+    value: 0.71,
+  },
+];
+
+const platforms = [
+  {
+    label: 'Mobile',
+    value: 59.12,
+  },
+  {
+    label: 'Desktop',
+    value: 40.88,
+  },
+];
+
+const normalize = (v, v2) => Number.parseFloat(((v * v2) / 100).toFixed(2));
+
+const mobileAndDesktopOS = [
+  ...mobileOS.map((v) => ({
+    ...v,
+    label: v.label === 'Other' ? 'Other (Mobile)' : v.label,
+    value: normalize(v.value, platforms[0].value),
+  })),
+  ...desktopOS.map((v) => ({
+    ...v,
+    label: v.label === 'Other' ? 'Other (Desktop)' : v.label,
+    value: normalize(v.value, platforms[1].value),
+  })),
+];
+const valueFormatterPieChart = (item) => `${item.value}%`;
 const chartSetting = {
   xAxis: [{ label: 'rainfall (mm)',labelStyle: { fill: 'white' }, }],
   height: 400,
@@ -100,7 +165,10 @@ const chartSetting = {
     
     
   return (
-    <div style={{ backgroundColor: '#1e1e1e', padding: '20px', borderRadius: '8px' }}>
+    
+
+    <div class="p-16 mt-8 grid grid-cols-2 gap-2">
+  <div className='border-2 border-white'>
       <BarChart
         dataset={dataset}
         yAxis={[{ 
@@ -159,6 +227,60 @@ const chartSetting = {
         }}
       />
     </div>
+
+  <div className='p-16 ml-16 flex flex-col justify-center items-center h-full border-2 border-white'> 
+    <PieChart
+  series={[
+    {
+      data: desktopOS.map((item, index) => ({
+        ...item,
+        color: ['#0EA5E9', '#4ECDC4', '#657275ff', '#96CEB4', '#FFEAA7'][index] // Custom colors
+      })),
+      highlightScope: { fade: 'global', highlight: 'item' },
+      faded: { innerRadius: 30, additionalRadius: -30, color: 'gray' },
+      valueFormatter: valueFormatterPieChart,
+    },
+  ]}
+  height={300}
+  width={300}
+  sx={{
+          // All text elements
+          '& .MuiChartsAxis-tickContainer .MuiChartsAxis-tickLabel': {
+            fill: 'white !important',
+            fontSize: '12px',
+          },
+          // Axis labels (rainfall mm)
+          '& .MuiChartsAxis-label': {
+            fill: 'white !important',
+            fontSize: '14px',
+          },
+          // Legend text - THIS IS THE KEY FIX
+          '& .MuiChartsLegend-series text': {
+            fill: 'white !important',
+            fontSize: '14px',
+            fontWeight: 'bold',
+          },
+          // Alternative legend selector
+          '& .MuiChartsLegend-root .MuiChartsLegend-series': {
+            fill: 'white !important',
+            color:'white'
+          },
+          // Another possible legend selector
+          '& .MuiChartsLegend-label': {
+            fill: 'white !important',
+          },
+          // Axis lines
+          '& .MuiChartsAxis-line': {
+            stroke: 'white !important',
+          },
+          // Grid lines
+          '& .MuiChartsGrid-line': {
+            stroke: 'rgba(255, 255, 255, 0.2) !important',
+          },
+        }}
+/>
+    </div>
+</div>
   );
 }
 
