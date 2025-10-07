@@ -328,6 +328,10 @@ const getJobApplications = async (req, res) => {
   }
 };
 
+const getAnalyticsDataByHr = async (req, res) => {
+  
+}
+
 
 module.exports = {
   getAvailableJobs,
