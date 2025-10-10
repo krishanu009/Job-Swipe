@@ -212,11 +212,11 @@ const updateJobApplication = async (req, res) => {
 const getCreatedJobs = async (req, res) => {
   try {
     // console.log("getCreatedJobs", req.user);
-// await someFunction(req, res)
-//     if (!req.user.id) {
-//       res.status(400);
-//       throw new Error("Error in fetching jobs!");
-//     }
+    // await someFunction(req, res)
+    //     if (!req.user.id) {
+    //       res.status(400);
+    //       throw new Error("Error in fetching jobs!");
+    //     }
 
     // const jobs = [
     //   { id: 1, title: "Software Engineer", createdBy: req.user.id },
@@ -284,26 +284,34 @@ const getCreatedJobs = async (req, res) => {
 const getJobApplications = async (req, res) => {
   try {
     if (!req.user?.id) {
-      return res.status(400).json({ success: false, message: "User ID missing" });
+      return res
+        .status(400)
+        .json({ success: false, message: "User ID missing" });
     }
 
     const { applicationStatus } = req.body;
     const jobId = req.params.id;
 
     if (!jobId) {
-      return res.status(400).json({ success: false, message: "Job ID is mandatory" });
+      return res
+        .status(400)
+        .json({ success: false, message: "Job ID is mandatory" });
     }
 
     const jobs = await Job.find({ hrId: req.user.id });
 
     if (!jobs || jobs.length === 0) {
-      return res.status(404).json({ success: false, message: "No jobs found for this user" });
+      return res
+        .status(404)
+        .json({ success: false, message: "No jobs found for this user" });
     }
 
     const findObj = jobs.find((el) => el._id.toString() === jobId);
 
     if (!findObj) {
-      return res.status(404).json({ success: false, message: "No Job Found with this ID" });
+      return res
+        .status(404)
+        .json({ success: false, message: "No Job Found with this ID" });
     }
 
     const jobApplications = await Applied.find({
@@ -311,7 +319,7 @@ const getJobApplications = async (req, res) => {
       applicationStatus,
     }).select("candidateId");
 
-    const candidateIds = jobApplications.map(app => app.candidateId);
+    const candidateIds = jobApplications.map((app) => app.candidateId);
 
     const candidates = await User.find({ _id: { $in: candidateIds } }).select(
       "firstName lastName email phone address experiance project description"
@@ -328,9 +336,6 @@ const getJobApplications = async (req, res) => {
   }
 };
 
-const getAnalyticsDataByHr = async (req, res) => {
-  
-}
 
 
 module.exports = {
