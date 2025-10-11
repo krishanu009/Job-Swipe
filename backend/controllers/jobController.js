@@ -237,7 +237,7 @@ const getCreatedJobs = async (req, res) => {
 
     appliedJobData.forEach((element) => {
       if (!jobCountData[element.jobId]) {
-        jobCountData[element.jobId] = { shortlisted: 0, applicationCount: 0 };
+        jobCountData[element.jobId] = { shortlisted: 0, applicationCount: 0 , rejected:0};
         // jobCountData[element.jobId].shortlisted=0;
         // jobCountData[element.jobId].applicationCount=0;
       }
@@ -246,6 +246,9 @@ const getCreatedJobs = async (req, res) => {
         jobCountData[element.jobId].shortlisted++;
       } else if (element.applicationStatus == "intrested") {
         jobCountData[element.jobId].applicationCount++;
+      }else if(element.applicationStatus == "rejected")
+      {
+        jobCountData[element.jobId].rejected++;
       }
     });
 
@@ -259,11 +262,12 @@ const getCreatedJobs = async (req, res) => {
       const counts = jobCountData[job._id] || {
         shortlisted: 0,
         applicationCount: 0,
+        rejected:0
       };
 
       jobObj.shortlisted = counts.shortlisted;
       jobObj.applicantsCount = counts.applicationCount;
-
+      jobObj.rejected = counts.rejected
       return jobObj;
     });
     // console.log("enrichedJobs",enrichedJobs);
