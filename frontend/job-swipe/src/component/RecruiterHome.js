@@ -63,15 +63,15 @@ function RecruiterHome() {
         
 
       }));
-      console.log("newApplicationCountData", newApplicationCountData);
+      // console.log("newApplicationCountData", newApplicationCountData);
 
       newApplicationCountData.forEach(el=> {
-        console.log("el",el);
+        // console.log("el",el);
         newPieChartData[0].value += parseFloat(el.reminingApplications);
         newPieChartData[1].value += parseFloat(el.shortlisted);
         newPieChartData[2].value += parseFloat(el.rejected);
       })
-      console.log("newPieChartData", newPieChartData);
+      // console.log("newPieChartData", newPieChartData);
       setApplicationCOuntData(newApplicationCountData);
       setPieChartData(newPieChartData);
     } catch (e) {

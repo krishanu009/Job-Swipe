@@ -10,6 +10,7 @@ import ApplicationSwipe from "./ApplicationSwipe";
 import PostedApplication from "./PostedApplication";
 import RecruiterJobPostingDashboard from "./RecruiterJobPostingDashboard";
 import RecruiterHome from "./RecruiterHome";
+import RecruiterProfile from "./RecruiterProfile";
 function RecruiterDashboard() {
     const [selectedPage, setSelectedPage] = useState("home");
     const [user,setUser] = useState("");
@@ -101,7 +102,8 @@ function RecruiterDashboard() {
       <div className="relative z-0">
         {/* {selectedPage === 'job' && <PostedApplication userInfo = {user}></PostedApplication>} */}
         {selectedPage === 'job' && <RecruiterJobPostingDashboard userInfo = {userInfo}></RecruiterJobPostingDashboard>}
-        {selectedPage === 'profile' && <NewJobApplication logout={logout} userInfo={userInfo} getUser={getUser}></NewJobApplication>}
+        {/* {selectedPage === 'profile' && <NewJobApplication logout={logout} userInfo={userInfo} getUser={getUser}></NewJobApplication>} */}
+        {selectedPage === 'profile' && <RecruiterProfile logout={logout} userInfo={userInfo} getUser={getUser}></RecruiterProfile>}
         {selectedPage ==='home' && <RecruiterHome></RecruiterHome>}
 
       </div>
