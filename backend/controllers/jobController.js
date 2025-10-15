@@ -234,7 +234,7 @@ const getCreatedJobs = async (req, res) => {
     }).select("_id applicationStatus jobId");
 
     console.log("appliedJobData", appliedJobData);
-
+    
     appliedJobData.forEach((element) => {
       if (!jobCountData[element.jobId]) {
         jobCountData[element.jobId] = { shortlisted: 0, applicationCount: 0 , rejected:0};
@@ -340,6 +340,54 @@ const getJobApplications = async (req, res) => {
   }
 };
 
+const getUserJobApplicationData = async (req,res) => {
+  try{
+    const appliedJobData = await Applied.find({candidateId:req.user.id}).select("jobId applicationStatus");
+    
+
+    console.log("applied jobs", appliedJobData);
+
+     let jobCountData = {};
+
+     appliedJobData.forEach((element) => {
+      if (!jobCountData[element.jobId]) {
+        jobCountData[element.jobId] = { shortlisted: 0, applicationCount: 0 , rejected:0};
+        // jobCountData[element.jobId].shortlisted=0;
+        // jobCountData[element.jobId].applicationCount=0;
+      }
+
+      if (element.applicationStatus == "shortlisted") {
+        jobCountData[element.jobId].shortlisted++;
+      } else if (element.applicationStatus == "intrested") {
+        jobCountData[element.jobId].applicationCount++;
+      }else if(element.applicationStatus == "rejected")
+      {
+        jobCountData[element.jobId].rejected++;
+      }
+    });
+
+
+
+
+     res.status(200).json({
+      success: true,
+      message: "Jobs retrieved successfully",
+      data: jobCountData,
+    });
+
+
+  }
+  catch(e)
+  {
+    res.status(500).json({
+      success: false,
+      message: "Error retrieving jobs",
+      error: error.message,
+    });
+  }
+
+}
+
 
 
 module.exports = {
@@ -350,4 +398,5 @@ module.exports = {
   updateJobApplication,
   getCreatedJobs,
   getJobApplications,
+  getUserJobApplicationData
 };

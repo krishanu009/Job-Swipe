@@ -100,7 +100,7 @@ const newUser = asyncHandler(async (req, res) => {
             },
             process.env.ACCESS_TOKEN_SECRET,
             {
-              expiresIn: "30m",
+              expiresIn: "120m",
             }
           );
     
@@ -154,7 +154,7 @@ const loginUser = asyncHandler(async (req, res) => {
         },
         process.env.ACCESS_TOKEN_SECRET,
         {
-          expiresIn: "30m",
+          expiresIn: "120m",
         }
       );
       res.status(200).json(accesToken);

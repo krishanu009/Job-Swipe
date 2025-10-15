@@ -104,7 +104,7 @@ function RecruiterHome() {
 
   // ];
   function valueFormatter(value) {
-    return `${value}mm`;
+    return `${value}`;
   }
 
   // const pieChartData = [
@@ -148,6 +148,7 @@ function RecruiterHome() {
               dataKey: "position",
             },
           ]}
+          
           xAxis={[
             {
               label: "Applications",
