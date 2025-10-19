@@ -1,7 +1,7 @@
 const express = require('express');
 const validateToken = require('../middlewear/validateTokenHandler');
 const router = express.Router();
-const {getAvailableJobs,createNewJob,updateJobById,applyJob,updateJobApplication, getCreatedJobs,getJobApplications,getUserJobApplicationData} = require('../controllers/jobController');
+const {getAvailableJobs,createNewJob,updateJobById,applyJob,updateJobApplication, getCreatedJobs,getJobApplications,getUserJobApplicationData,jobAnalyticsData} = require('../controllers/jobController');
 
 
 
@@ -13,5 +13,6 @@ router.post("/applyJob",validateToken,applyJob);
 router.post("/updateJobApplication",validateToken,updateJobApplication);
 router.post("/jobapplications/:id",validateToken,getJobApplications);
 router.get("/myApplicationData",validateToken,getUserJobApplicationData);
+router.get("/jobAnalyticsData",validateToken,jobAnalyticsData);
 
 module.exports = router;

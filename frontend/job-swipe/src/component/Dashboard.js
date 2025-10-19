@@ -97,7 +97,7 @@ function Dashboard() {
       <div className="p-8 relative z-0">
         {selectedPage === 'job' && <JobSwipe userInfo={userInfo} />}
         {selectedPage === 'profile' && <NewJobApplication logout={logout} userInfo={userInfo} getUser={getUser}></NewJobApplication>}
-        {selectedPage ==='home' && <Home></Home>}
+        {selectedPage ==='home' && <Home  userInfo={userInfo}></Home>}
       </div>
     </>
   )

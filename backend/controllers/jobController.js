@@ -234,10 +234,14 @@ const getCreatedJobs = async (req, res) => {
     }).select("_id applicationStatus jobId");
 
     console.log("appliedJobData", appliedJobData);
-    
+
     appliedJobData.forEach((element) => {
       if (!jobCountData[element.jobId]) {
-        jobCountData[element.jobId] = { shortlisted: 0, applicationCount: 0 , rejected:0};
+        jobCountData[element.jobId] = {
+          shortlisted: 0,
+          applicationCount: 0,
+          rejected: 0,
+        };
         // jobCountData[element.jobId].shortlisted=0;
         // jobCountData[element.jobId].applicationCount=0;
       }
@@ -246,8 +250,7 @@ const getCreatedJobs = async (req, res) => {
         jobCountData[element.jobId].shortlisted++;
       } else if (element.applicationStatus == "intrested") {
         jobCountData[element.jobId].applicationCount++;
-      }else if(element.applicationStatus == "rejected")
-      {
+      } else if (element.applicationStatus == "rejected") {
         jobCountData[element.jobId].rejected++;
       }
     });
@@ -262,12 +265,12 @@ const getCreatedJobs = async (req, res) => {
       const counts = jobCountData[job._id] || {
         shortlisted: 0,
         applicationCount: 0,
-        rejected:0
+        rejected: 0,
       };
 
       jobObj.shortlisted = counts.shortlisted;
       jobObj.applicantsCount = counts.applicationCount;
-      jobObj.rejected = counts.rejected
+      jobObj.rejected = counts.rejected;
       return jobObj;
     });
     // console.log("enrichedJobs",enrichedJobs);
@@ -340,55 +343,126 @@ const getJobApplications = async (req, res) => {
   }
 };
 
-const getUserJobApplicationData = async (req,res) => {
-  try{
-    const appliedJobData = await Applied.find({candidateId:req.user.id}).select("jobId applicationStatus");
-    
+const getUserJobApplicationData = async (req, res) => {
+  try {
+    const appliedJobData = await Applied.find({
+      candidateId: req.user.id,
+    }).select("jobId applicationStatus");
 
     console.log("applied jobs", appliedJobData);
 
-     let jobCountData = {};
+    let jobCountData = {
+      summary: {
+        shortlisted: 0,
+        underReview: 0,
+        rejected: 0,
+        applications: 0,
+      },
+    };
 
-     appliedJobData.forEach((element) => {
+    appliedJobData.forEach((element) => {
       if (!jobCountData[element.jobId]) {
-        jobCountData[element.jobId] = { shortlisted: 0, applicationCount: 0 , rejected:0};
+        jobCountData[element.jobId] = {
+          shortlisted: 0,
+          underReview: 0,
+          rejected: 0,
+        };
         // jobCountData[element.jobId].shortlisted=0;
         // jobCountData[element.jobId].applicationCount=0;
       }
 
       if (element.applicationStatus == "shortlisted") {
         jobCountData[element.jobId].shortlisted++;
+        jobCountData.summary.shortlisted++;
       } else if (element.applicationStatus == "intrested") {
-        jobCountData[element.jobId].applicationCount++;
-      }else if(element.applicationStatus == "rejected")
-      {
+        jobCountData[element.jobId].shortlisted++;
+        jobCountData.summary.shortlisted++;
+      } else if (element.applicationStatus == "rejected") {
         jobCountData[element.jobId].rejected++;
+        jobCountData.summary.rejected++;
       }
+      jobCountData.summary.applications++;
     });
 
-
-
-
-     res.status(200).json({
+    res.status(200).json({
       success: true,
       message: "Jobs retrieved successfully",
       data: jobCountData,
     });
-
-
-  }
-  catch(e)
-  {
+  } catch (e) {
     res.status(500).json({
       success: false,
       message: "Error retrieving jobs",
       error: error.message,
     });
   }
+};
 
-}
+const jobAnalyticsData = async (req, res) => {
+  try {
+     const now = new Date();
+    const twelveMonthsAgo = new Date();
+    twelveMonthsAgo.setMonth(now.getMonth() - 11); // include current month
 
+    // Convert postingDate (string → date) and group by year/month
+    const result = await Job.aggregate([
+      {
+        $addFields: {
+          postingDateConverted: { $toDate: "$postingDate" }
+        }
+      },
+      {
+        $match: {
+          postingDateConverted: { $gte: twelveMonthsAgo, $lte: now }
+        }
+      },
+      {
+        $group: {
+          _id: {
+            year: { $year: "$postingDateConverted" },
+            month: { $month: "$postingDateConverted" }
+          },
+          count: { $sum: 1 }
+        }
+      },
+      {
+        $sort: { "_id.year": 1, "_id.month": 1 }
+      }
+    ]);
 
+    // Lookup for month counts
+    const monthMap = {};
+    result.forEach(item => {
+      const key = `${item._id.year}-${String(item._id.month).padStart(2, "0")}`;
+      monthMap[key] = item.count;
+    });
+
+    // Month names
+    const monthNames = [
+      "January", "February", "March", "April", "May", "June",
+      "July", "August", "September", "October", "November", "December"
+    ];
+
+    // Build result for last 12 months
+    const data = [];
+    for (let i = 11; i >= 0; i--) {
+      const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+      const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`;
+      data.push({
+        month: monthNames[d.getMonth()],
+        year: d.getFullYear(),
+        count: monthMap[key] || 0
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      months: data
+    });
+  } catch (e) {
+    console.log("err@ jobAnalyticsData", e);
+  }
+};
 
 module.exports = {
   getAvailableJobs,
@@ -398,5 +472,6 @@ module.exports = {
   updateJobApplication,
   getCreatedJobs,
   getJobApplications,
-  getUserJobApplicationData
+  getUserJobApplicationData,
+  jobAnalyticsData
 };
