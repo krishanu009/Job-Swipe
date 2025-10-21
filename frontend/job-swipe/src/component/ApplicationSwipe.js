@@ -282,6 +282,35 @@ useEffect(() => {
         >
           <img src={require("../assets/notIntrested.png")} alt="Checked" />
         </div>
+
+         <div
+          className={`fade-image ${!showRejecttImage ? "show" : ""}`}
+          style={{
+            left: "20%",
+            zIndex: 30,
+            position: "absolute",
+            width: "200px",
+            top: "30%",
+          }}
+        >
+          <div class="flex items-center space-x-2 text-white animate-pulse">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke-width="2"
+              stroke="currentColor"
+              class="w-6 h-6"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M15 19l-7-7 7-7"
+              />
+            </svg>
+            <span class="text-lg font-semibold">Swipe left to reject</span>
+          </div>
+        </div>
       </div>
       {!applicationData.length ? (
         <div className="flex flex-col justify-center items-center h-full text-center text-white space-y-4">
@@ -303,7 +332,7 @@ useEffect(() => {
   </svg>
   <h2 className="text-xl font-semibold">No Application Found</h2>
   <p className="text-gray-400 max-w-md">
-    We couldn't find any applications. Please try again later or refine your search.
+    We couldn't find any applications. Please try again later.
   </p>
 </div>
       ) : (
@@ -458,6 +487,34 @@ useEffect(() => {
         >
           <img src={require("../assets/checked.png")} alt="Checked" />
         </div>
+          <div
+          className={`fade-image ${!showAcceptImage ? "show" : ""}`}
+          style={{
+            zIndex: 30,
+            position: "absolute",
+            width: "300px",
+            top: "32%",
+          }}
+        >
+          <div class="flex items-center space-x-2 text-sky-500 animate-pulse">
+            <span class="text-lg font-semibold">Swipe right to shortlist</span>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke-width="2"
+              stroke="currentColor"
+              class="w-6 h-6"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M9 5l7 7-7 7"
+              />
+            </svg>
+          </div>
+        </div>
+        
       </div>
     </div>
   );

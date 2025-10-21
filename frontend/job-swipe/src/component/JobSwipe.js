@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "../styling/swipe.css";
-import axios from 'axios';
-function JobSwipe({userInfo}) {
+import axios from "axios";
+function JobSwipe({ userInfo }) {
   const [isDragging, setIsDragging] = useState(false);
   const [isVisible, setIsVisible] = useState(true);
   const [screenX, setScreenX] = useState(0);
@@ -57,14 +57,14 @@ function JobSwipe({userInfo}) {
   const halfCardWidth = cardWidth / 2;
   const maxTilt = 20;
 
-  useEffect(()=>{
-  getMyJobs();
-  },[])
+  useEffect(() => {
+    getMyJobs();
+  }, []);
 
   // useEffect(()=>{
   //  if(jobData && !jobData?.length)
   //  {
-      
+
   //  }
   // },[jobData])
 
@@ -75,9 +75,9 @@ function JobSwipe({userInfo}) {
     // if (screenX < 500) return;
 
     const screenWidth = window.innerWidth;
- console.log("screen values", {screenX,screenWidth});
-  if (screenX > screenWidth * 0.7) return; // 70% of screen width
-  if (screenX < screenWidth * 0.3) return; // 30% of screen width
+    console.log("screen values", { screenX, screenWidth });
+    if (screenX > screenWidth * 0.7) return; // 70% of screen width
+    if (screenX < screenWidth * 0.3) return; // 30% of screen width
     const newPosition = Math.min(
       Math.max(screenX - halfCardWidth, 0),
       window.innerWidth - cardWidth
@@ -111,26 +111,22 @@ function JobSwipe({userInfo}) {
     //logic for api call to reject resume
 
     let payload = {
-      jobId:currentJobApplication._id,
-            candidateId:userInfo._id,
-            applicationStatus:"notintrested"
+      jobId: currentJobApplication._id,
+      candidateId: userInfo._id,
+      applicationStatus: "notintrested",
     };
-    await axios.post(process.env.REACT_APP_APPLY_JOB, payload, {
-      headers: { Authorization: "Bearer " + localStorage.getItem("CandidateToken") },
-    })
-    .then((res) => {
-    
-      console.log("rejectJob", res.data);
-      
-     
-      
-    })
-    .catch((e) => {
-      console.log("rejectJob e",e);
- 
-    
-    });
-
+    await axios
+      .post(process.env.REACT_APP_APPLY_JOB, payload, {
+        headers: {
+          Authorization: "Bearer " + localStorage.getItem("CandidateToken"),
+        },
+      })
+      .then((res) => {
+        console.log("rejectJob", res.data);
+      })
+      .catch((e) => {
+        console.log("rejectJob e", e);
+      });
 
     console.log("resume to reject", currentJobApplication);
 
@@ -139,14 +135,13 @@ function JobSwipe({userInfo}) {
     );
     setJobData(newResumeData);
     if (newResumeData.length) setCurrentJobApplication(newResumeData[0]);
-    else
-      // setCurrentJobApplication({
-      //   _id: "",
-      //   name: "",
-      //   tags: "",
-      //   summary: "",
-      // });
-      getMyJobs();
+    // setCurrentJobApplication({
+    //   _id: "",
+    //   name: "",
+    //   tags: "",
+    //   summary: "",
+    // });
+    else getMyJobs();
   };
 
   const applyJob = async () => {
@@ -155,26 +150,22 @@ function JobSwipe({userInfo}) {
     //logic for api call to select resume
 
     let payload = {
-      jobId:currentJobApplication._id,
-            candidateId:userInfo._id,
-            applicationStatus:"intrested"
+      jobId: currentJobApplication._id,
+      candidateId: userInfo._id,
+      applicationStatus: "intrested",
     };
-    await axios.post(process.env.REACT_APP_APPLY_JOB, payload, {
-      headers: { Authorization: "Bearer " + localStorage.getItem("CandidateToken") },
-    })
-    .then((res) => {
-    
-      console.log("rejectJob", res.data);
-      
-     
-      
-    })
-    .catch((e) => {
-      console.log("rejectJob e",e);
- 
-    
-    });
-
+    await axios
+      .post(process.env.REACT_APP_APPLY_JOB, payload, {
+        headers: {
+          Authorization: "Bearer " + localStorage.getItem("CandidateToken"),
+        },
+      })
+      .then((res) => {
+        console.log("rejectJob", res.data);
+      })
+      .catch((e) => {
+        console.log("rejectJob e", e);
+      });
 
     console.log("resume to select", currentJobApplication);
 
@@ -183,14 +174,13 @@ function JobSwipe({userInfo}) {
     );
     setJobData(newResumeData);
     if (newResumeData.length) setCurrentJobApplication(newResumeData[0]);
-    else
-      // setCurrentJobApplication({
-      //   id: "",
-      //   name: "",
-      //   tags: "",
-      //   summary: "",
-      // });
-      getMyJobs();
+    // setCurrentJobApplication({
+    //   id: "",
+    //   name: "",
+    //   tags: "",
+    //   summary: "",
+    // });
+    else getMyJobs();
   };
 
   const onDragStart = (event) => {
@@ -224,41 +214,38 @@ function JobSwipe({userInfo}) {
     if (event.target.id === "accept") {
       setShowAcceptImage(true);
       setTimeout(() => setShowAcceptImage(false), 500);
-    } else if((event.target.id === "reject")) {
+    } else if (event.target.id === "reject") {
       setShowRejecttImage(true);
       setTimeout(() => setShowRejecttImage(false), 500);
     }
     setSelection(event.target.id);
   };
 
-
   const getMyJobs = async () => {
     let payload = {
-      "userId":userInfo._id
-     }
-    await axios.post(process.env.REACT_APP_GET_JOBS_FOR_ME, payload, {
-      headers: { Authorization: "Bearer " + localStorage.getItem("CandidateToken") },
-    })
-    .then((res) => {
-    
-      console.log("getMyJobs", res.data);
-      
-      let newJobData = res.data.jobs;
-      if(newJobData?.length)
-      {
-        setCurrentJobApplication(newJobData[0]);
-        newJobData.splice(0, 1);
-      }
-       
-      setJobData(newJobData);
-      
-    })
-    .catch((e) => {
-      console.log("getMyJobs e",e);
- 
-    
-    });
-  }
+      userId: userInfo._id,
+    };
+    await axios
+      .post(process.env.REACT_APP_GET_JOBS_FOR_ME, payload, {
+        headers: {
+          Authorization: "Bearer " + localStorage.getItem("CandidateToken"),
+        },
+      })
+      .then((res) => {
+        console.log("getMyJobs", res.data);
+
+        let newJobData = res.data.jobs;
+        if (newJobData?.length) {
+          setCurrentJobApplication(newJobData[0]);
+          newJobData.splice(0, 1);
+        }
+
+        setJobData(newJobData);
+      })
+      .catch((e) => {
+        console.log("getMyJobs e", e);
+      });
+  };
   return (
     <div
       style={{ backgroundColor: "rgb(18,18,30)" }}
@@ -282,9 +269,60 @@ function JobSwipe({userInfo}) {
         >
           <img src={require("../assets/notIntrested.png")} alt="Checked" />
         </div>
+
+        <div
+          className={`fade-image ${!showRejecttImage ? "show" : ""}`}
+          style={{
+            left: "20%",
+            zIndex: 30,
+            position: "absolute",
+            width: "200px",
+            top: "30%",
+          }}
+        >
+          <div class="flex items-center space-x-2 text-white animate-pulse">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke-width="2"
+              stroke="currentColor"
+              class="w-6 h-6"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M15 19l-7-7 7-7"
+              />
+            </svg>
+            <span class="text-lg font-semibold">Swipe left to reject</span>
+          </div>
+        </div>
       </div>
+
       {!jobData.length ? (
-        <div></div>
+        <div>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="48"
+            height="48"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            className="text-red-400"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M18.364 5.636l-12.728 12.728m0-12.728l12.728 12.728"
+            />
+          </svg>
+          <h2 className="text-xl font-semibold">No jobs Found</h2>
+          <p className="text-gray-400 max-w-md">
+            We couldn't find any jobs. Please try again later.
+          </p>
+        </div>
       ) : (
         <div className=" w-[1/3] flex justify-center items-center h-screen">
           {isDragging && !isVisible && (
@@ -314,7 +352,7 @@ function JobSwipe({userInfo}) {
                   <div className="w-[10%]">
                     <img
                       className="image-cover"
-                      src={currentJobApplication.companyImage                      }
+                      src={currentJobApplication.companyImage}
                     ></img>
                   </div>
                   <div className="w-[90%] pl-2">
@@ -326,10 +364,12 @@ function JobSwipe({userInfo}) {
                 </div>
                 <div class="card__content  space-y-1">
                   <span className="text-white">
-                  {currentJobApplication.skillsRequired.join(", ")}
+                    {currentJobApplication.skillsRequired.join(", ")}
                   </span>
                   <h2>Summary:</h2>
-                  <p className="text-white">{currentJobApplication.roleDescription}</p>
+                  <p className="text-white">
+                    {currentJobApplication.roleDescription}
+                  </p>
                 </div>
               </div>
             </div>
@@ -373,9 +413,13 @@ function JobSwipe({userInfo}) {
                 </div>
               </div>
               <div class="card__content  space-y-1">
-                <span className="text-white">{currentJobApplication.skillsRequired.join(", ")}</span>
+                <span className="text-white">
+                  {currentJobApplication.skillsRequired.join(", ")}
+                </span>
                 <h2>Summary:</h2>
-                <p className="text-white">{currentJobApplication.roleDescription}</p>
+                <p className="text-white">
+                  {currentJobApplication.roleDescription}
+                </p>
               </div>
             </div>
           </div>
@@ -416,6 +460,34 @@ function JobSwipe({userInfo}) {
           }}
         >
           <img src={require("../assets/checked.png")} alt="Checked" />
+        </div>
+
+        <div
+          className={`fade-image ${!showAcceptImage ? "show" : ""}`}
+          style={{
+            zIndex: 30,
+            position: "absolute",
+            width: "300px",
+            top: "32%",
+          }}
+        >
+          <div class="flex items-center space-x-2 text-sky-500 animate-pulse">
+            <span class="text-lg font-semibold">Swipe right to apply</span>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke-width="2"
+              stroke="currentColor"
+              class="w-6 h-6"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M9 5l7 7-7 7"
+              />
+            </svg>
+          </div>
         </div>
       </div>
     </div>
