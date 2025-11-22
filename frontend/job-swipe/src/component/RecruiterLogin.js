@@ -89,8 +89,9 @@ navigator.clipboard.writeText(text).then(() => {
        </label> */}
        
        <button disabled={isSubmitting} class="submit">Submit</button>
-       <p class="sign-in">New User? 
-         <a href="/recruiterRegister" style={{color:"#43c7e8"}}>Register here</a>
+       <p class="sign-in">
+        {/* New User?  */}
+         {/* <a href="/recruiterRegister" style={{color:"#43c7e8"}}>Register here</a> */}
          <p className="text-red-500">{errorText}</p>
          </p>
         
